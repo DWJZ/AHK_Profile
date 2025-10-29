@@ -131,7 +131,7 @@ tol := 12  ; pixel tolerance for detecting sizes/edges
 !^Left::SnapCycle("left")
 !^Right::SnapCycle("right")
 !^c::CenterWindow()
-!^f::FullWindow()
+!^f::#Up
 
 SnapCycle(direction := "left") {
     global tol
@@ -213,17 +213,6 @@ CenterWindow() {
     newX := ml + (msw - ww) / 2
     newY := mt + (msh - wh) / 2
     WinMove(newX, newY, ww, wh, "ahk_id " win)
-}
-
-FullWindow() {
-    win := WinExist("A")
-    if !win
-        return
-    cx := A_ScreenWidth / 2
-    cy := A_ScreenHeight / 2
-    mon := GetMonitorIndexFromPoint(cx, cy)
-    MonitorGetWorkArea(mon, &ml, &mt, &mr, &mb)
-    WinMove(ml, mt, mr - ml, mb - mt, "ahk_id " win)
 }
 
 ; ---- Helpers ----
