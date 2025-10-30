@@ -1,143 +1,170 @@
-# 🧠 AHK Productivity Profile
+# AHK Window & Key Remapper
 
-A modern, developer-oriented AutoHotkey (AHK v2) profile designed to enhance text editing, navigation, and window management efficiency on Windows.
+This AutoHotkey v2.0 script provides enhanced keyboard shortcuts for
+window management, Vim-style navigation, and editing efficiency.\
+It's designed for users who rely on keyboard-centric workflows and
+prefer minimal mouse interaction.
 
----
+------------------------------------------------------------------------
 
-## ⚙️ Requirements
+## 📋 Prerequisites
 
-### System prerequisites
+1.  Ensure the **bottom-left corner** of your keyboard layout looks like
+    this:
 
-1. **Keyboard layout**:
-   Must have the left bottom row as:
-   `LWin | LCtrl | LAlt | Space`
+        LAlt | LCtrl | RCtrl | Space
 
-2. **Remap Right Ctrl → Left Win**
-   You can do this using PowerToys, SharpKeys, or keyboard firmware.
+2.  Remap **Right Ctrl (RCtrl)** → **Left Win (LWin)** using your
+    keyboard firmware or OS tool.
 
-3. **Install AutoHotkey v2.0+**
-   [https://www.autohotkey.com/](https://www.autohotkey.com/)
+------------------------------------------------------------------------
 
-4. Save this script as `productivity.ahk` and set it to run at startup.
+## ⚙️ Features & Hotkeys
 
----
+### 1. CapsLock Enhancements
 
-## 🧠 Key Concepts
+-   **Double-tap CapsLock** → `Esc`\
+-   **CapsLock + H/J/K/L** → Vim-style arrow navigation
 
-### CapsLock Behavior
-| Action | Result |
-|--------|---------|
-| Tap **CapsLock** twice quickly | Sends `Esc` |
-| Hold **CapsLock** | Enables `HJKL` arrow navigation |
-| `Caps + H/J/K/L` | Moves Left/Down/Up/Right (Vim-style) |
+  Combo      Action
+  ---------- ---------
+  Caps + H   ← Left
+  Caps + J   ↓ Down
+  Caps + K   ↑ Up
+  Caps + L   → Right
 
-CapsLock state remains **off** — it functions purely as a **modal modifier**.
+*(CapsLock state is always forced off.)*
 
----
+------------------------------------------------------------------------
 
-### Alt Key as "Smart Ctrl"
+### 2. Right Ctrl + Arrow Key Shortcuts
 
-All **Alt+<key>** combos behave as **Ctrl+<key>**, so your left hand can stay in the home position.
+#### Navigation
 
-| Example | Action |
-|----------|---------|
-| `Alt + C` | Copy (`Ctrl+C`) |
-| `Alt + V` | Paste (`Ctrl+V`) |
-| `Alt + Z` | Undo (`Ctrl+Z`) |
-| `Alt + /` | Comment (`Ctrl+/`) |
-| `Alt + Enter` | `Ctrl+Enter` |
-| `Alt + Shift + Enter` | `Ctrl+Shift+Enter` |
+  Combo           Action
+  --------------- ---------------------------------
+  RCtrl + Left    Home
+  RCtrl + Right   End
+  RCtrl + Up      Ctrl + Home (top of document)
+  RCtrl + Down    Ctrl + End (bottom of document)
 
-#### Arrows
-| Combo | Action |
-|--------|--------|
-| `Alt + ← / →` | Home / End |
-| `Alt + ↑ / ↓` | Top / Bottom of document |
-| `Alt + Shift + (Arrow)` | Same with selection |
-| `Alt + Backspace` | Delete previous word (`Ctrl+Backspace`) |
+#### Selection
 
----
+  Combo                   Action
+  ----------------------- ------------------------------
+  RCtrl + Shift + Left    Select to line start
+  RCtrl + Shift + Right   Select to line end
+  RCtrl + Shift + Up      Select to top of document
+  RCtrl + Shift + Down    Select to bottom of document
 
-### Win-Key Shortcuts → Ctrl Equivalents
+#### Editing
 
-| Combo | Action |
-|--------|--------|
-| `Win + D` | `Ctrl+D` |
-| `Win + R` | `Ctrl+R` |
-| `Win + O` | `Ctrl+O` |
-| `Win + ← / →` | Move window between desktops |
-| `Win + ↑ / ↓` | Cycle virtual desktops |
+  Combo               Action
+  ------------------- -------------------------------------------
+  RCtrl + Backspace   Delete all text to the left of the cursor
 
-*(Note: Some Win-key combos may be reserved by Windows.)*
+------------------------------------------------------------------------
 
----
+### 3. Win + Arrow Key Shortcuts
 
-## 🪟 Window Management
+  Combo             Action
+  ----------------- -------------------------------------
+  Win + Up / Down   Switch between virtual desktops
+  Win + Right       Move window to the next monitor
+  Win + Left        Move window to the previous monitor
 
-Smart window snapping with width cycling and monitor awareness.
+------------------------------------------------------------------------
 
-| Combo | Action |
-|--------|--------|
-| `Alt + Ctrl + ← / →` | Snap left/right, cycle widths (½ → ⅔ → ⅓) |
-| `Alt + Ctrl + C` | Center active window |
-| `Alt + Ctrl + F` | Maximize window to work area |
+### 4. Window Management: Snap & Center
 
-**Cycle logic:**
-Each press cycles through width ratios — ½, ⅔, ⅓ — and switches sides if you press the opposite direction.
+#### SnapCycle
 
----
+Cycle window widths between **½**, **⅔**, and **⅓** of the monitor
+width.
 
-### Mouse Enhancements
+  Combo                   Action
+  ----------------------- --------------------------
+  RCtrl + LCtrl + Left    Snap left / cycle sizes
+  RCtrl + LCtrl + Right   Snap right / cycle sizes
 
-| Combo | Action |
-|--------|--------|
-| `Alt + LClick` | Performs a `Ctrl + LClick` |
-| `Alt + Shift + X` | Sends `PrintScreen` |
+#### Center Window
 
----
+  Combo               Action
+  ------------------- ----------------------------------
+  RCtrl + LCtrl + C   Center window on current monitor
 
-## 🧩 Implementation Details
+#### Maximize / Restore
 
-### Functions
-- **SnapCycle(direction)**: Smart snapping with monitor detection and width cycling
-- **CenterWindow()**: Centers active window on its current monitor
-- **FullWindow()**: Expands active window to monitor’s work area
-- **GetMonitorIndexFromPoint(x, y)**: Identifies which monitor contains a given point
+  Combo               Action
+  ------------------- ----------------------------------
+  RCtrl + LCtrl + F   Maximize / restore active window
 
-### Tunable Parameters
-- `tol := 12` — Pixel tolerance for detecting window size and position edges
+------------------------------------------------------------------------
 
-### Notes
-- The Alt→Ctrl mapping is dynamically generated with loops to avoid 50+ redundant hotkeys.
-- Window snapping uses `MonitorGetWorkArea()` to respect taskbars and reserved areas.
-- The script restores windows before moving if minimized/maximized (`WinRestore`).
+### 5. Alt Key Remaps (Productivity)
 
----
+  Combo     Action
+  --------- --------------------
+  Alt + C   Ctrl + C (Copy)
+  Alt + D   Ctrl + D
+  Alt + R   Ctrl + R (Refresh)
+  Alt + O   Ctrl + O (Open)
 
-## 🧾 Summary
+------------------------------------------------------------------------
 
-| Shortcut | Function |
-|-----------|-----------|
-| CapsLock double-tap | Escape |
-| CapsLock + H/J/K/L | Arrow keys |
-| Alt + Letter | Ctrl + Letter |
-| Alt + Arrows | Jump in text |
-| Alt + Ctrl + Arrows | Snap windows |
-| Alt + Ctrl + C/F | Center / Full window |
-| Alt + LClick | Ctrl + LClick |
-| Alt + Shift + X | Screenshot |
+## 🧠 How SnapCycle Works
 
----
+1.  Detects the active window and monitor.\
+2.  Determines the current snap width (½, ⅔, or ⅓).\
+3.  Cycles through these widths on the **left** or **right** side.\
+4.  If switching sides, keeps the same width.
 
-## 🧠 Dev Notes
+------------------------------------------------------------------------
 
-- Written for **AutoHotkey v2 syntax** — incompatible with v1.
-- Designed for **power users and developers** who prefer minimal movement from the home row.
-- Tested on **Windows 11**, multi-monitor setups, and high-DPI environments.
+## 🧩 Configuration
 
----
+``` ahk
+tol := 0  ; pixel tolerance for edge detection
+```
 
-## 🧾 License
+Increase `tol` for high-DPI monitors if snapping is inconsistent.
 
-MIT License © 2025
-Feel free to fork, modify, and redistribute with credit.
+------------------------------------------------------------------------
+
+## 🖥 Helper Functions
+
+-   **`GetMonitorIndexFromPoint(x, y)`** → Returns the monitor index for
+    a given point.\
+-   **`CenterWindow()`** → Centers the active window on its current
+    monitor.
+
+------------------------------------------------------------------------
+
+## 🧱 Requirements
+
+-   [AutoHotkey v2.0+](https://www.autohotkey.com/)\
+-   Windows OS with multiple monitor support (for SnapCycle).
+
+------------------------------------------------------------------------
+
+## 🚀 Installation
+
+1.  Install **AutoHotkey v2.0+**.\
+2.  Save this script as `key_remapper.ahk`.\
+3.  Double-click to run it.\
+4.  (Optional) Add a shortcut to your Startup folder to launch
+    automatically on boot.
+
+------------------------------------------------------------------------
+
+## 📄 License
+
+This script is provided under the **MIT License**.\
+Feel free to modify and share.
+
+------------------------------------------------------------------------
+
+## ✨ Author Notes
+
+Made for efficiency enthusiasts and Vim users who love precise keyboard
+control.

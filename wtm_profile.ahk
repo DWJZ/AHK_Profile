@@ -2,11 +2,11 @@
 
 ; prerequesite:
 ; 1. the left bottom corner should look like this:
-; LWin | LCtrl | LAlt | Space
+; LAlt | LCtrl | RCtrl | Space
 ; 2. switch RCtl to LWin
 
 CapsLock:: {
-    Static presses := 0, squelch := 300
+    static presses := 0, squelch := 300
     presses += 1
     if (presses = 1) {
         SetTimer(done, -squelch) ; start single-shot timeout
@@ -21,7 +21,6 @@ CapsLock:: {
     }
 }
 
-
 ; capsLock + HJKL
 SetCapsLockState "AlwaysOff"
 #HotIf GetKeyState("CapsLock", "P")
@@ -31,107 +30,44 @@ k::Up
 l::Right
 #HotIf
 
-
-; --- Alt + Arrow remaps ---
-!Left::send "{Home}"
-!Right::send "{End}"
-!Up::Send("^{Home}")        ; Top of document
-!Down::Send("^{End}")       ; Bottom of document
+; --- Right Ctrl + Arrow remaps ---
+>^Left:: send "{Home}"
+>^Right:: send "{End}"
+>^Up:: Send("^{Home}")        ; Top of document
+>^Down:: Send("^{End}")       ; Bottom of document
 
 ; select them
-!+Left::send "+{Home}"
-!+Right::send "+{End}"
-!+Up::Send("^+{Home}")
-!+Down::Send("^+{End}")
+>^+Left:: send "+{Home}"
+>^+Right:: send "+{End}"
+>^+Up:: Send("^+{Home}")
+>^+Down:: Send("^+{End}")
 
-; alt + backspace to delete whole word to the left
-!BackSpace::
+; Right Ctrl + backspace to delete whole word to the left
+>^BackSpace::
 {
     send "+{Home}"
     send "{BackSpace}"
 }
 
-; map all letters Ctrl+<letter> to Alt+<letter>
-!a::Send("^a")  ;
-!b::Send("^b")  ;
-!c::Send("^c")  ;
-!d::Send("^d")  ;
-!e::Send("^e")  ;
-!f::Send("^f")  ;
-!g::Send("^g")  ;
-!h::Send("^h")  ;
-!i::Send("^i")  ;
-!j::Send("^j")  ;
-!k::Send("^k")  ;
-!l::Send("^l")  ;
-!m::Send("^m")  ;
-!n::Send("^n")  ;
-!o::Send("^o")  ;
-!p::Send("^p")  ;
-!q::Send("^q")  ;
-!r::Send("^r")  ;
-!s::Send("^s")  ;
-!t::Send("^t")  ;
-!u::Send("^u")  ;
-!v::Send("^v")  ;
-!w::Send("^w")  ;
-!x::Send("^x")  ;
-!y::Send("^y")  ;
-!z::Send("^z")  ;
-
-!+a::Send("^+a")  ;
-!+b::Send("^+b")  ;
-!+c::Send("^+c")  ;
-!+d::Send("^+d")  ;
-!+e::Send("^+e")  ;
-!+f::Send("^+f")  ;
-!+g::Send("^+g")  ;
-!+h::Send("^+h")  ;
-!+i::Send("^+i")  ;
-!+j::Send("^+j")  ;
-!+k::Send("^+k")  ;
-!+l::Send("^+l")  ;
-!+m::Send("^+m")  ;
-!+n::Send("^+n")  ;
-!+o::Send("^+o")  ;
-!+p::Send("^+p")  ;
-!+q::Send("^+q")  ;
-!+r::Send("^+r")  ;
-!+s::Send("^+s")  ;
-!+t::Send("^+t")  ;
-!+u::Send("^+u")  ;
-!+v::Send("^+v")  ;
-!+w::Send("^+w")  ;
-!+x::Send("^+x")  ;
-!+y::Send("^+y")  ;
-!+z::Send("^+z")  ;
-
-; shortcuts
-!/::Send("^/")  ;
-!'::Send("^'")  ;
-!Enter::Send("^{Enter}")  ;
-!+Enter::Send("^+{Enter}")  ;
-
-
-; original ctrl behavior
-; #c::Send("^c") ; not working
-#d::Send("^d")
-#r::Send("^r")
-#o::Send("^o")
-
-#up::Send("#{Tab}")
-#down::Send("#{Tab}")
-#right::Send("#^{Right}")
-#left::Send("#^{Left}")
+#up:: Send("#{Tab}")
+#down:: Send("#{Tab}")
+#right:: Send("#^{Right}")
+#left:: Send("#^{Left}")
 
 ; ---- Settings ----
-tol := 12  ; pixel tolerance for detecting sizes/edges
+tol := 0  ; pixel tolerance for detecting sizes/edges
 
 ; ---- Hotkeys ----
-!^Left::SnapCycle("left")
-!^Right::SnapCycle("right")
-!^c::CenterWindow()
-!^f::#Up
+>^<^Left:: SnapCycle("left")
+>^<^Right:: SnapCycle("right")
+>^<^c:: CenterWindow()
+>^<^f::#Up
+
+; remap Alt + c/d/r/o to Ctrl + c/d/r/o
+!c::^c
+!d::^d
+!r::^r
+!o::^o
 
 SnapCycle(direction := "left") {
     global tol
@@ -148,13 +84,13 @@ SnapCycle(direction := "left") {
     WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " win)
 
     ; --- Find the monitor that contains the window center ---
-    cx := wx + ww/2, cy := wy + wh/2
+    cx := wx + ww / 2, cy := wy + wh / 2
     mon := GetMonitorIndexFromPoint(cx, cy)
     MonitorGetWorkArea(mon, &ml, &mt, &mr, &mb)
     msw := mr - ml, msh := mb - mt
 
     ; --- Define width stages relative to this monitor ---
-    widths := [ msw/2, (msw*2)/3, msw/3 ]  ; 1/2, 2/3, 1/3
+    widths := [msw / 2, (msw * 2) / 3, msw / 3]  ; 1/2, 2/3, 1/3
 
     ; --- Figure out current width stage (0 = none matched) ---
     idx := 0
@@ -173,7 +109,7 @@ SnapCycle(direction := "left") {
     else if Abs((wx + ww) - mr) <= tol
         currentSide := "right"
     else
-        currentSide := (cx <= (ml + mr)/2) ? "left" : "right"
+        currentSide := (cx <= (ml + mr) / 2) ? "left" : "right"
 
     ; --- Decide target width index ---
     ; If width already matches a stage and we're only switching sides, keep same width.
@@ -194,7 +130,6 @@ SnapCycle(direction := "left") {
     WinMove(newX, newY, newW, newH, "ahk_id " win)
 }
 
-
 CenterWindow() {
     win := WinExist("A")
     if !win
@@ -205,7 +140,7 @@ CenterWindow() {
 
     WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " win)
 
-    cx := wx + ww/2, cy := wy + wh/2
+    cx := wx + ww / 2, cy := wy + wh / 2
     mon := GetMonitorIndexFromPoint(cx, cy)
     MonitorGetWorkArea(mon, &ml, &mt, &mr, &mb)
     msw := mr - ml, msh := mb - mt
@@ -229,20 +164,12 @@ GetMonitorIndexFromPoint(x, y) {
         if (x >= l && x <= r && y >= t && y <= b)
             return i  ; inside this monitor
         ; Track nearest by squared distance to the workarea center
-        cx := (l + r)/2, cy := (t + b)/2
-        d := (x - cx)**2 + (y - cy)**2
+        cx := (l + r) / 2, cy := (t + b) / 2
+        d := (x - cx) ** 2 + (y - cy) ** 2
         if (d < nearestDist) {
             nearestDist := d
             nearest := i
         }
     }
     return nearest
-}
-
-; Alt+Shift+X to PrintScreen
-!+x::PrintScreen
-
-; Remap Alt + Left Mouse Click to Ctrl + Left Mouse Click
-!LButton::{
-    Send "^{LButton}"
 }
