@@ -49,6 +49,8 @@ l::Right
     send "{BackSpace}"
 }
 
+>^Tab::!Tab
+
 #up:: Send("#{Tab}")
 #down:: Send("#{Tab}")
 #right:: Send("#^{Right}")
