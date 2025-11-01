@@ -71,6 +71,8 @@ tol := 0  ; pixel tolerance for detecting sizes/edges
 !r::^r
 !o::^o
 
+!Space::!Shift
+
 SnapCycle(direction := "left") {
     global tol
     win := WinExist("A")
