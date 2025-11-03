@@ -64,6 +64,7 @@ tol := 0  ; pixel tolerance for detecting sizes/edges
 >^<^Right:: SnapCycle("right")
 >^<^c:: CenterWindow()
 >^<^f::#Up
+<^+x::!+x
 
 ; remap Alt + c/d/r/o to Ctrl + c/d/r/o
 !c::^c
