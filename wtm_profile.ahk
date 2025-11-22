@@ -62,9 +62,14 @@ tol := 0  ; pixel tolerance for detecting sizes/edges
 ; ---- Hotkeys ----
 >^<^Left:: SnapCycle("left")
 >^<^Right:: SnapCycle("right")
+>^<^Up:: SnapVertical("top")
+>^<^Down:: SnapVertical("bottom")
 >^<^c:: CenterWindow()
 >^<^f::#Up
 <^+x::!+x
+
+!>^<^Left::#+Left
+!>^<^Right::#+Right
 
 ; remap Alt + c/d/r/o to Ctrl + c/d/r/o
 !c::^c
@@ -132,6 +137,63 @@ SnapCycle(direction := "left") {
     newY := mt
 
     ; Move/resize
+    WinMove(newX, newY, newW, newH, "ahk_id " win)
+}
+
+; Snap window to top or bottom half
+SnapVertical(direction := "top") {
+    global tol
+    win := WinExist("A")
+    if !win
+        return
+
+    mm := WinGetMinMax("ahk_id " win)
+    if (mm != 0)
+        WinRestore("ahk_id " win)
+
+    WinGetPos(&wx, &wy, &ww, &wh, "ahk_id " win)
+
+    ; Find the monitor containing the window center
+    cx := wx + ww / 2, cy := wy + wh / 2
+    mon := GetMonitorIndexFromPoint(cx, cy)
+    MonitorGetWorkArea(mon, &ml, &mt, &mr, &mb)
+    msw := mr - ml, msh := mb - mt
+
+    ; --- Define height stages relative to this monitor ---
+    heights := [msh / 2, (msh * 2) / 3, msh / 3]  ; 1/2, 2/3, 1/3
+
+    ; --- Figure out current height stage (0 = none matched) ---
+    idx := 0
+    for i, val in heights {
+        if Abs(wh - val) <= tol {
+            idx := i
+            break
+        }
+    }
+
+    ; --- Figure out current side (top/bottom) on this monitor ---
+    currentSide := ""
+    if Abs(wy - mt) <= tol
+        currentSide := "top"
+    else if Abs((wy + wh) - mb) <= tol
+        currentSide := "bottom"
+    ; If not snapped to an edge, use current direction as default for cycle logic
+    else
+        currentSide := direction
+
+    ; --- Decide target height index ---
+    if (idx >= 1 && currentSide != direction) {
+        nextIdx := idx
+    } else {
+        ; Cycle: 1/2 -> 2/3 -> 1/3 -> 1/2
+        nextIdx := (idx = 0 || idx = 3) ? 1 : (idx + 1)
+    }
+
+    newW := msw
+    newH := heights[nextIdx]
+    newX := ml
+    newY := (direction = "top") ? mt : (mb - newH)
+
     WinMove(newX, newY, newW, newH, "ahk_id " win)
 }
 
