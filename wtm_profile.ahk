@@ -66,7 +66,7 @@ tol := 0  ; pixel tolerance for detecting sizes/edges
 >^<^Down:: SnapVertical("bottom")
 >^<^c:: CenterWindow()
 >^<^f::#Up
-<^+x::!+x
+>^+x::!+x
 
 !>^<^Left::#+Left
 !>^<^Right::#+Right
